@@ -1,7 +1,7 @@
 class Solution {
 public:
     int getCommon(vector<int>& nums1, vector<int>& nums2) {
-        map<int,int> fre1, fre2;
+        unordered_map<int,int> fre1, fre2;
         for(auto &i : nums1){
             if(!fre1[i]) fre1[i]++;
         }
