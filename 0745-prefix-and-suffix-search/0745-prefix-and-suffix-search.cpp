@@ -1,73 +1,71 @@
-class Trie{
+class trie {
 private:
-    Trie* child[26];
-    bool is_leaf = false;
-    vector<int>index;
+	static const int MAX_CHAR = 26 + 1;
+	trie* child[MAX_CHAR];
+	int index {-1};		// If exist, don't override
+
 public:
-    Trie(){
-        memset(child,0, sizeof(child));
-    }
-    void insert(string word, int indx){
-        Trie* cur = this;
-        for(auto &i : word){
-            int ch = i - 'a';
-            if(!cur->child[ch])
-                cur->child[ch] = new Trie();
-            cur->child[ch]->index.push_back(indx);
-            cur = cur->child[ch];
-        }
-        cur->is_leaf = true;
-    }
-    vector<int> get_indices(string &prefix){
-        Trie* cur = this;
-        for(auto &i : prefix){
-            int ch = i - 'a';
-            if(!cur->child[ch]) return {};
-            cur = cur->child[ch];
-        }
-        return cur->index;
-    }
+	trie() {
+		memset(child, 0, sizeof(child));
+	}
+
+	void insert(const string &str, int word_idx) {
+		trie* cur = this;
+
+		for (int idx = 0; idx < (int) str.size(); ++idx) {
+			int ch = str[idx] - 'a';
+			if (str[idx] == '$')
+				ch = MAX_CHAR - 1;
+			if (!cur->child[ch])
+				cur->child[ch] = new trie();
+			if(cur->child[ch]->index == -1)
+				cur->child[ch]->index = word_idx;
+			cur = cur->child[ch];
+		}
+	}
+
+	int get_positions(const string &str) {
+		trie* cur = this;
+
+		for (int idx = 0; idx < (int) str.size(); ++idx) {
+			int ch = str[idx] - 'a';
+			if (str[idx] == '$')
+				ch = MAX_CHAR - 1;
+			if (!cur->child[ch])
+				return -1;
+			cur = cur->child[ch];
+		}
+		return cur->index;
+	}
 };
 
 class WordFilter {
-private:
-    Trie tree;
-    vector<string> all_words;
 public:
-    WordFilter(vector<string>& words) {
-        map < string, bool > fre;
-        for(int i = words.size() - 1;i >= 0;--i){
-            if(!fre[words[i]]){
-                tree.insert(words[i], i);
-            }
-            fre[words[i]] = true;
-        }
-        all_words = words;
-    }
+	trie prefix_tree;
 
-    int f(string pref, string suff) {
-        vector<int>indices = tree.get_indices(pref);
-        sort(indices.begin(), indices.end(), greater<int>());
-        for(auto &i : indices){
-            string word = all_words[i];
-            if(suffix_exist(word , suff)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    bool suffix_exist(const string& word, const string &suff){
-        int i = word.size() - 1, j = suff.size() - 1;
-        if(suff.size() > word.size()) return false;
-        while(i >= 0 && j >= 0 && suff[j] == word[i]){
-            --i,--j;
-        }
-        return j < 0;
-    }
+	WordFilter(vector<string>& words) {
+		set<string> words_set;
+
+		// Generate all pairs of suffix/prefix
+		// But, trie already generate all prefixes, so generate suffixes + one prefix
+		// Use unique symbol to differentiate suffix from prefix (otherwise a word is unclear)
+		// As we create more words (n^2), this solution needs more memory
+		// But it queries in faster time!
+		for (int i = (int) words.size() - 1; i >= 0; --i) {
+			if (words_set.insert(words[i]).second) {
+
+				string suffix;
+				for (int j = (int)words[i].size()-1; j >= 0; --j) {
+					suffix = words[i][j] + suffix;
+					string new_word = suffix + "$" + words[i];
+					prefix_tree.insert(new_word, i);
+				}
+			}
+		}
+	}
+
+	int f(string prefix, string suffix) {
+		string new_word = suffix + "$" + prefix;
+		return prefix_tree.get_positions(new_word);
+	}
 };
-
-/**
- * Your WordFilter object will be instantiated and called as such:
- * WordFilter* obj = new WordFilter(words);
- * int param_1 = obj->f(pref,suff);
- */
