@@ -20,11 +20,9 @@ public:
                 sum += end->val;
                 if(sum == 0){
                     start->next = end->next;
-                   // start = end->next;
                 }
                 end=end->next;
             }
-            if(start)
             start=start->next;
         }
         return front->next;
