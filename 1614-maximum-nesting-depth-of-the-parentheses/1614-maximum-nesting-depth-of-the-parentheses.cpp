@@ -6,7 +6,7 @@ public:
             if(s[i] == '(') ++L, ans = max(ans, L);
             else if(s[i] == ')'){
                 --L;
-            }else if(i + 1 < s.size() && s[i + 1] == ')'){
+            }else if(s[i + 1] == ')'){
                 ans = max(ans, L);
             }
         }
