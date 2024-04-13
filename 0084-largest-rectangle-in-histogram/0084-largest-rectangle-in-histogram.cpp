@@ -26,8 +26,6 @@ public:
         
         int ans = 0;
         for(int i = 0;i < n;++i){
-            ans = max(ans, heights[i] * (i - leftsmaller[i]));
-            ans = max(ans, heights[i] * (rightsmaller[i] - i));
             ans = max(ans, heights[i] * (i - leftsmaller[i] + rightsmaller[i] - i - 1));
         }
         return ans ;
