@@ -10,19 +10,17 @@
  * };
  */
 class Solution {
-    int ans = 0;
 public:
     int sumNumbers(TreeNode* root) {
-        dfs(root , 0);
-        return ans;
+        int ans = 0;
+        dfs(root, to_string(root->val), ans);
+        return ans ;
     }
-    void dfs(TreeNode* root,int num){
+    void dfs(TreeNode* root, string s, int &ans){
         if(!root->left && !root->right){
-            num = num * 10 + root->val;
-            ans += num;
-            return;
+            ans += stoi(s);
         }
-        if(root->left) dfs(root->left , num * 10 + root->val);
-        if(root->right) dfs(root->right , num * 10 + root->val);
+        if(root->left) dfs(root->left, s + to_string(root->left->val), ans);
+        if(root->right) dfs(root->right, s + to_string(root->right->val), ans);
     }
 };
