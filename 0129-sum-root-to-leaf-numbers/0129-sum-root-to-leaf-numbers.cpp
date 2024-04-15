@@ -13,14 +13,14 @@ class Solution {
 public:
     int sumNumbers(TreeNode* root) {
         int ans = 0;
-        dfs(root, to_string(root->val), ans);
+        dfs(root, root->val , ans);
         return ans ;
     }
-    void dfs(TreeNode* root, string s, int &ans){
+    void dfs(TreeNode* root, int num, int &ans){
         if(!root->left && !root->right){
-            ans += stoi(s);
+            ans += num;
         }
-        if(root->left) dfs(root->left, s + to_string(root->left->val), ans);
-        if(root->right) dfs(root->right, s + to_string(root->right->val), ans);
+        if(root->left) dfs(root->left, num * 10 + (root->left->val) , ans);
+        if(root->right) dfs(root->right,num * 10 + (root->right->val) , ans);
     }
 };
