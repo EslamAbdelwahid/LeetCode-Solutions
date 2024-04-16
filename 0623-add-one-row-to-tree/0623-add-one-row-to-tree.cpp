@@ -19,13 +19,11 @@ public:
         }
         depth -= 2;
         queue<TreeNode*> q;
-        unordered_map < TreeNode*, bool > vis;
         q.push(root);
         while(q.size() && depth){
             int sz = q.size();
             while(sz--){
                 auto u = q.front(); q.pop();
-                if(vis[u]) continue;
                 if(u->left) q.push(u->left);
                 if(u->right) q.push(u->right);
             }
