@@ -1,26 +1,25 @@
 class Solution {
 public:
     int compareVersion(string version1, string version2) {
+        string a = version1, b = version2 ;
+        int n  = a.size(), m = b.size();
         int i = 0, j = 0;
-        vector<int> result1, result2;
-        while (i < version1.size() || j < version2.size()) {
-            result1 = helper(version1, i);
-            result2 = helper(version2, j);
-            int v1 = result1[0], v2 = result2[0];
-            i = result1[1]; j = result2[1];
-            if (v1 > v2) return 1;
-            else if (v1 < v2) return -1;
+        while(1){
+            int sum1 = 0, sum2 = 0;
+            while(i < n && a[i] != '.'){
+                sum1  = sum1 * 10 + (a[i] - '0'), ++i;
+            }
+            ++i;
+            while(j < m && b[j] != '.'){
+                sum2 = sum2 * 10 + (b[j] - '0'), ++j;
+            }
+            ++j;
+            if(sum1 > sum2) return 1;;
+            if(sum1 < sum2) return -1;
+            if(i >= n && j >= m) break; 
         }
-        return 0;
+        return 0 ;
     }
     
-    vector<int> helper(string s, int idx) {
-        int num = 0;
-        while (idx < s.size()) {
-            if (s[idx] == '.') break;
-            else num = num * 10 + (s[idx] - '0');
-            idx++;
-        }
-        return {num, idx + 1};
-    }
+    
 };
