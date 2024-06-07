@@ -1,34 +1,32 @@
-
-class trie{
-    private :
-    static const int Max = 26;
-    trie* child[Max];
-    bool isLeaf {};
-    public : 
-    trie(){
-        isLeaf = false;
+class Trie{
+private:
+    Trie* child[26];
+    bool is_leaf;
+public:
+    Trie(){
         memset(child, 0, sizeof(child));
+        is_leaf = false;
     }
-    void insert(string word){
-        trie* cur = this;
-        for(auto &i : word){
-            int ch = i - 'a';
-            if(cur->child[ch] == 0) cur->child[ch] = new trie();
-            cur = cur->child[ch];
+    void add(string &word){
+        Trie* cur = this;
+        for(auto &ch : word){
+            int idx = ch - 'a';
+            if(!cur->child[idx]) cur->child[idx] = new Trie();
+            cur = cur->child[idx];
         }
-        cur->isLeaf = true;
+        cur->is_leaf = true;
     }
-    string replace(string word){
-        trie *cur = this;
-        string ans = "";
-        for(auto &i : word){
-            int ch = i - 'a';
-            if(cur->child[ch] == 0) return word;
-            ans += i;
-            cur = cur->child[ch];
-            if(cur->isLeaf) return ans;
+    string replace(string &word){
+        string ans ;
+        Trie *cur = this;
+        for(auto &ch : word){
+            int idx = ch - 'a';
+            if(cur->is_leaf) return ans;
+            if(cur->child[idx]) cur = cur->child[idx];
+            else break;
+            ans += ch;
         }
-        if(cur->isLeaf) return ans;
+        if(cur->is_leaf) return ans;
         return word;
     }
 };
@@ -36,11 +34,9 @@ class trie{
 class Solution {
 public:
     string replaceWords(vector<string>& dictionary, string sentence) {
-        trie root;
-        for(auto &word : dictionary){
-            root.insert(word);
-        }
-        string word = "", ans = "";
+        Trie root = Trie();
+        for(auto &i : dictionary) root.add(i);
+        string word, ans ;
         for(auto &i : sentence){
             if(i == ' '){
                 ans += root.replace(word);
@@ -51,6 +47,6 @@ public:
             }
         }
         ans += root.replace(word);
-        return ans;
+        return ans ;
     }
 };
